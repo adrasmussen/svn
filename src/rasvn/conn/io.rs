@@ -28,7 +28,6 @@ impl RaSvnConnection {
 
         let mut buf = Vec::new();
         encode_item(&item, &mut buf);
-        buf.push(b'\n');
 
         #[cfg(feature = "cyrus-sasl")]
         let wire = if let Some(sasl) = self.sasl.as_mut() {
@@ -149,7 +148,6 @@ impl RaSvnConnection {
     pub(super) async fn write_item(&mut self, item: &SvnItem) -> Result<(), SvnError> {
         self.write_buf.clear();
         encode_item(item, &mut self.write_buf);
-        self.write_buf.push(b'\n');
 
         let buf = std::mem::take(&mut self.write_buf);
         let result = self.write_wire_bytes(&buf).await;
